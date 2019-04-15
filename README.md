@@ -1,29 +1,19 @@
 # vue-ts-micro
 
 ## Project setup
+
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Compiles and hot-reloads client & server for development
+
 ```
-yarn run serve
+yarn dev
 ```
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+### Compiles and hot-reloads client for development
 
-### Run your tests
 ```
-yarn run test
+yarn serve
 ```
-
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
