@@ -10,7 +10,6 @@ export class App {
     this.app = express();
     this.setWebpackDev();
     this.setConfig();
-    this.setStaticFiles();
   }
 
   public run(): void {
@@ -23,6 +22,10 @@ export class App {
     if (this.app.get("env") === "development") {
       const config = require("@vue/cli-service/webpack.config");
       const compiler = webpack(config);
+      this.app.use((req, res, next) => {
+        if (!/(\.(?!html)\w+$|__webpack.*)/.test(req.url)) req.url = "/";
+        next();
+      });
       this.app.use(
         require("webpack-dev-middleware")(compiler, {
           publicPath: config.output.publicPath
@@ -33,13 +36,11 @@ export class App {
   }
 
   private setConfig(): void {
-    this.app.use(history());
-  }
-
-  private setStaticFiles(): void {
-    this.app.use("/", express.static(path.join(__dirname, "../../dist")));
-    this.app.get("/", (req, res) => {
-      res.sendFile(path.join(__dirname, "../../dist/index.html"));
-    });
+    this.app.use(express.urlencoded({ extended: false }));
+    this.app.use(express.json());
+    this.app.use(express.static(path.join(__dirname, "../../dist")));
+    if (this.app.get("env") === "production") {
+      this.app.use(history());
+    }
   }
 }
