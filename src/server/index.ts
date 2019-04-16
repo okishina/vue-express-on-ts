@@ -15,7 +15,7 @@ export class App {
 
   public run(): void {
     this.app.listen(3000, () => {
-      console.log("Server start on port localhost:3000");
+      console.log("\nServer start on port http://localhost:3000");
     });
   }
 
