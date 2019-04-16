@@ -1,27 +1,45 @@
 import express from "express";
 import webpack from "webpack";
 import path from "path";
+import history from "connect-history-api-fallback";
 
-const app = express();
+export class App {
+  public app: express.Application;
 
-if (app.get("env") === "development") {
-  const config = require("@vue/cli-service/webpack.config");
-  const compiler = webpack(config);
-  app.use(
-    require("webpack-dev-middleware")(compiler, {
-      publicPath: config.output.publicPath
-    })
-  );
+  constructor() {
+    this.app = express();
+    this.setWebpackDev();
+    this.setConfig();
+    this.setStaticFiles();
+  }
 
-  app.use(require("webpack-hot-middleware")(compiler));
+  public run(): void {
+    this.app.listen(3000, () => {
+      console.log("Server start on port localhost:3000");
+    });
+  }
+
+  private setWebpackDev(): void {
+    if (this.app.get("env") === "development") {
+      const config = require("@vue/cli-service/webpack.config");
+      const compiler = webpack(config);
+      this.app.use(
+        require("webpack-dev-middleware")(compiler, {
+          publicPath: config.output.publicPath
+        })
+      );
+      this.app.use(require("webpack-hot-middleware")(compiler));
+    }
+  }
+
+  private setConfig(): void {
+    this.app.use(history());
+  }
+
+  private setStaticFiles(): void {
+    this.app.use("/", express.static(path.join(__dirname, "../../dist")));
+    this.app.get("/", (req, res) => {
+      res.sendFile(path.join(__dirname, "../../dist/index.html"));
+    });
+  }
 }
-
-app.use("/", express.static(path.join(__dirname, "../../dist")));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../../dist/index.html"));
-});
-
-app.listen(3000, () => {
-  console.log("Server start on port 3000");
-});
