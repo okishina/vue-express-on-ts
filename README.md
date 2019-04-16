@@ -1,4 +1,4 @@
-# vue-ts-micro
+# vue-express-on-ts
 
 ## Project setup
 
